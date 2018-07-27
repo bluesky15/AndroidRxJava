@@ -13,11 +13,13 @@ import io.reactivex.schedulers.Schedulers;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private Disposable disposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         // observable
         Observable<String> animalsObservable = getAnimalsObservable();
@@ -29,14 +31,16 @@ public class MainActivity extends AppCompatActivity {
         animalsObservable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(animalsObserver);
+                .subscribeWith(animalsObserver);
     }
 
     private Observer<String> getAnimalsObserver() {
         return new Observer<String>() {
+
             @Override
             public void onSubscribe(Disposable d) {
                 Log.d(TAG, "onSubscribe");
+                disposable = d;
             }
 
             @Override
@@ -58,5 +62,13 @@ public class MainActivity extends AppCompatActivity {
 
     private Observable<String> getAnimalsObservable() {
         return Observable.just("Ant", "Bee", "Cat", "Dog", "Fox");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // don't send events once the activity is destroyed
+        disposable.dispose();
     }
 }
