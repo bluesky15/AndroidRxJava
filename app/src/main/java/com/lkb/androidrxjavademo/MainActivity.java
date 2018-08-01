@@ -3,6 +3,7 @@ package com.lkb.androidrxjavademo;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -11,9 +12,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MainActivityViewModel viewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
         TextView msgView = findViewById(R.id.msgView);
-        msgView.setText(viewModel.getMessage());
+        Button myButton = findViewById(R.id.buttonView);
+        MainActivityViewModel viewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
+        viewModel.getMessage().observe(this,msg-> msgView.setText(msg));
+
+        myButton.setOnClickListener(v -> viewModel.changeLiveDataValue());
 
     }
 
