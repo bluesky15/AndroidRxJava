@@ -15,7 +15,9 @@ public class MainActivity extends AppCompatActivity {
         TextView msgView = findViewById(R.id.msgView);
         Button myButton = findViewById(R.id.buttonView);
         MainActivityViewModel viewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
-        viewModel.getMessage().observe(this,msg-> msgView.setText(msg));
+        //viewModel.getMessage().observe(this,msg-> msgView.setText(msg));
+        viewModel.init();
+        viewModel.getMessageLocal().observe(this,msg-> msgView.setText(msg));
 
         myButton.setOnClickListener(v -> viewModel.changeLiveDataValue());
 
